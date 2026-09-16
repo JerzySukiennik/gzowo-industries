@@ -25,7 +25,8 @@
 //   battery. RIGHT pod = MAX98357 + button (in the lid). HOOD = OLED + mirror + lens.
 // ---------------------------------------------------------------------------
 
-part = "assembly";   // front | lid_hood | lid_r | lid_l | temple_r | temple_l | assembly | fit | layout | exploded
+FOLD = 80;           // fold angle for part="fold" (temples swing inward, behind the pods)
+part = "assembly";   // front | lid_hood | lid_r | lid_l | temple_r | temple_l | assembly | fit | fold | layout | exploded
 show_parts = true;   // ghost electronics/optics in assembly/fit
 show_head = true;    // ghost of Jurek's head scan (reference/head2-mm.stl)
 head_file = "../reference/head2-mm.stl";
@@ -82,7 +83,8 @@ POD_LX   = -(66 + POD_L[0]/2);
 POD_RY   = 6;                  // right pod y-range -17..29
 POD_LY   = 2;                  // left pod y-range -30..34
 // hinge, M2.5x12 from the top: bottom knuckle 8 tapped, temple 5, top 2, gaps 0.5 -> 4 mm of thread, head proud
-HK_Z0 = 12; HK_BOT = 8; HK_TEMPLE = 5; HK_TOP = 2; HK_GAP = 0.5;
+HK_Z0 = 12; HK_BOT = 8; HK_TEMPLE = 5; HK_TOP = 1.5; HK_GAP = 1.0;   // slot 7 mm for the 5 mm knuckle (bridged when printed upside down); 12 mm screw: 1.5 + 1 + 5 + 1 = 8.5 above, 3.5 mm thread below
+HK_NECK = 12;                  // the temple arm stays HK_TEMPLE tall out to this radius from the axis, so it swings clear of the knuckle blocks
 HK_R  = 5;                     // knuckle radius (bore 2.9 -> 3.5 mm wall)
 TEMPLE_W = 12;  TEMPLE_H = 14;
 LID_T    = 2.4;
@@ -210,11 +212,13 @@ module temple(s) {
 }
 module temple_body(s, zk0) {
     hx = hinge_x(s); hy = hinge_y(s); zk = zk0 + HK_TEMPLE/2;
-    p0 = [0, -6, 0]; p1 = [0, -TEMPLE_L-8, 0]; p2 = [0, -TEMPLE_L-24, -4]; p3 = [0, -TEMPLE_L-36, -EAR_DROP-6];
+    p0 = [0, -HK_NECK-8, 0]; p1 = [0, -TEMPLE_L-8, 0]; p2 = [0, -TEMPLE_L-24, -4]; p3 = [0, -TEMPLE_L-36, -EAR_DROP-6];
     N = 28;
     difference() {
         union() {
-            hull() { translate([hx, hy, zk0]) cylinder(r=HK_R, h=HK_TEMPLE); translate([hx, hy-8, zk]) scale([TEMPLE_W/2, 4, TEMPLE_H/2]) sphere(r=1, $fn=24); }
+            // neck: same height as the knuckle out to HK_NECK, then the arm grows to full height over the next 8 mm
+            hull() { translate([hx, hy, zk0]) cylinder(r=HK_R, h=HK_TEMPLE); translate([hx-HK_R, hy-HK_NECK, zk0]) cube([2*HK_R, HK_NECK, HK_TEMPLE]); }
+            hull() { translate([hx-HK_R, hy-HK_NECK, zk0]) cube([2*HK_R, 0.01, HK_TEMPLE]); translate([hx, hy-HK_NECK-8, zk]) scale([TEMPLE_W/2, 4, TEMPLE_H/2]) sphere(r=1, $fn=24); }
             for (i=[0:N-1]) hull() for (t=[i/N, (i+1)/N]) { q = bez(p0,p1,p2,p3,t); k = 1 - 0.42*t; translate([hx, hy+q[1], zk+q[2]]) scale([TEMPLE_W/2*k, 4, TEMPLE_H/2*k]) sphere(r=1, $fn=24); }
             if (s>0) translate([hx-TEMPLE_W/2-1, hy-TEMPLE_L+16, zk-1]) rotate([0,90,0]) cylinder(d=SPK_D+4, h=7.5);   // speaker boss, head side
         }
@@ -263,6 +267,7 @@ else if (part == "lid_l") lid_pod(-1);
 else if (part == "temple_r") temple(1);
 else if (part == "temple_l") temple(-1);
 else if (part == "fit") { %front(); ghosts(); }
+else if (part == "fold") { %front(); for (s=[-1,1]) color("orange") translate([hinge_x(s), hinge_y(s), 0]) rotate([0,0,-s*FOLD]) translate([-hinge_x(s), -hinge_y(s), 0]) temple(s); }
 else if (part == "layout") { %front(); ghosts(); }
 else if (part == "exploded") { color("dimgray") front(); color("darkslategray") translate([0,0,18]) { lid_hood(); lid_pod(1); lid_pod(-1); } for (s=[-1,1]) color("dimgray") translate([s*12, -28, 0]) temple(s); }
 else assembly();
