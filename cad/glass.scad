@@ -26,7 +26,8 @@
 // ---------------------------------------------------------------------------
 
 FOLD = 80;           // fold angle for part="fold" (temples swing inward, behind the pods)
-part = "assembly";   // front | lid_hood | lid_r | lid_l | temple_r | temple_l | assembly | fit | fold | layout | exploded
+part = "assembly";   // front | lid_hood | lid_r | lid_l | temple_r | temple_l | test_hinge_front | test_hinge_temple | test_plate | assembly | fit | fold | layout | exploded
+print_orient = false; // true: export the front already upside down on the bed (z=0 is the hood/pod rim)
 show_parts = true;   // ghost electronics/optics in assembly/fit
 show_head = true;    // ghost of Jurek's head scan (reference/head2-mm.stl)
 head_file = "../reference/head2-mm.stl";
@@ -210,14 +211,17 @@ module temple(s) {
         translate([hx, hy, HK_Z0-1]) clr(HK_BOT+HK_TEMPLE+2*HK_GAP+HK_TOP+3);   // bore cut LAST through everything
     }
 }
+module temple_neck(s, zk0) {
+    hx = hinge_x(s); hy = hinge_y(s);
+    hull() { translate([hx, hy, zk0]) cylinder(r=HK_R, h=HK_TEMPLE); translate([hx-HK_R, hy-HK_NECK, zk0]) cube([2*HK_R, HK_NECK, HK_TEMPLE]); }
+}
 module temple_body(s, zk0) {
     hx = hinge_x(s); hy = hinge_y(s); zk = zk0 + HK_TEMPLE/2;
     p0 = [0, -HK_NECK-8, 0]; p1 = [0, -TEMPLE_L-8, 0]; p2 = [0, -TEMPLE_L-24, -4]; p3 = [0, -TEMPLE_L-36, -EAR_DROP-6];
     N = 28;
     difference() {
         union() {
-            // neck: same height as the knuckle out to HK_NECK, then the arm grows to full height over the next 8 mm
-            hull() { translate([hx, hy, zk0]) cylinder(r=HK_R, h=HK_TEMPLE); translate([hx-HK_R, hy-HK_NECK, zk0]) cube([2*HK_R, HK_NECK, HK_TEMPLE]); }
+            temple_neck(s, zk0);
             hull() { translate([hx-HK_R, hy-HK_NECK, zk0]) cube([2*HK_R, 0.01, HK_TEMPLE]); translate([hx, hy-HK_NECK-8, zk]) scale([TEMPLE_W/2, 4, TEMPLE_H/2]) sphere(r=1, $fn=24); }
             for (i=[0:N-1]) hull() for (t=[i/N, (i+1)/N]) { q = bez(p0,p1,p2,p3,t); k = 1 - 0.42*t; translate([hx, hy+q[1], zk+q[2]]) scale([TEMPLE_W/2*k, 4, TEMPLE_H/2*k]) sphere(r=1, $fn=24); }
             if (s>0) translate([hx-TEMPLE_W/2-1, hy-TEMPLE_L+16, zk-1]) rotate([0,90,0]) cylinder(d=SPK_D+4, h=7.5);   // speaker boss, head side
@@ -260,7 +264,41 @@ module assembly() {
     if (show_parts) ghosts();
     if (show_head) head_ghost();
 }
-if (part == "front") front();
+use <screw_coupon.scad>
+
+// ------------------------------------------------------------ test pieces ---
+TS = -1;   // test pieces use the LEFT pod/hinge (no hood next to it)
+module test_hinge_front() intersection() {
+    difference() {
+        union() { difference() { union() { pod_shell(TS); hinge_knuckles(TS); } pod_cavity(TS); } pod_holders(TS); }
+        pod_cuts(TS);
+    }
+    translate([hinge_x(TS)-17, hinge_y(TS)-8, -5]) cube([34, 38, 44]);
+}
+module test_hinge_temple() { hx = hinge_x(TS); hy = hinge_y(TS); zk0 = HK_Z0+HK_BOT+HK_GAP;
+    difference() {
+        union() {
+            translate([hx, hy, 0]) rotate([0,0,TS*TEMPLE_SPLAY]) translate([-hx, -hy, 0]) temple_neck(TS, zk0);
+            translate([hx, hy, zk0]) cylinder(r1=HK_R-0.5, r2=HK_R, h=0.5);
+            translate([hx, hy, zk0+0.5]) cylinder(r=HK_R, h=HK_TEMPLE-1);
+            translate([hx, hy, zk0+HK_TEMPLE-0.5]) cylinder(r1=HK_R, r2=HK_R-0.5, h=0.5);
+        }
+        translate([hx, hy, HK_Z0-1]) clr(HK_BOT+HK_TEMPLE+2*HK_GAP+HK_TOP+3);
+    }
+}
+module flat_hinge_front() translate([-hinge_x(TS), hinge_y(TS), 0]) translate([0, 0, 38]) rotate([180,0,0]) test_hinge_front();   // hinge axis at the origin, pod toward -y, rim on the bed
+module flat_hinge_temple() translate([0, 0, -(HK_Z0+HK_BOT+HK_GAP)]) rotate([0,0,-TS*TEMPLE_SPLAY]) translate([-hinge_x(TS), -hinge_y(TS), 0]) test_hinge_temple();   // hinge axis at the origin, arm toward -y, flat on the bed
+module test_plate() {
+    screw_coupon();
+    translate([80, 20, 0]) flat_hinge_front();
+    translate([122, 14, 0]) flat_hinge_temple();
+}
+module pr_front() if (print_orient) translate([0, 0, 38]) rotate([180,0,0]) front(); else front();
+
+if (part == "front") pr_front();
+else if (part == "test_hinge_front") flat_hinge_front();
+else if (part == "test_hinge_temple") flat_hinge_temple();
+else if (part == "test_plate") test_plate();
 else if (part == "lid_hood") lid_hood();
 else if (part == "lid_r") lid_pod(1);
 else if (part == "lid_l") lid_pod(-1);

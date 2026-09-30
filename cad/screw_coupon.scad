@@ -15,7 +15,7 @@ T_CLR = 5;      // plate thickness for clearance holes
 // pips instead of text (headless OpenSCAD has no fonts): n dots = position from the left, 1..6
 module pips(n, x, y, z) for (k = [0:n-1]) translate([x - (n-1)*0.9 + 1.8*k, y, z]) cylinder(d=1, h=1);
 
-difference() {
+module screw_coupon() difference() {
   union() {
     translate([0, 0, 0]) cube([P * len(TAP) + 4, 12, T_TAP]);      // tap block
     translate([0, 14, 0]) cube([P * len(CLR) + 4, 12, T_CLR]);     // clearance plate
@@ -28,3 +28,5 @@ difference() {
   // one long groove marks the TAP block (blind holes), so the two rows cannot be confused
   translate([2, 10.5, T_TAP - 0.6]) cube([P * len(TAP), 0.8, 1]);
 }
+
+screw_coupon();

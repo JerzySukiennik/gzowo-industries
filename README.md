@@ -8,7 +8,8 @@ G.L.A.S.S. = *Gzowo Like A Smart Sass*.
 ## Repo layout
 
 - `cad/glass.scad` — the print-ready parametric frame (OpenSCAD 2021.01). Source of truth.
-- `cad/export-all.sh` — exports every part to `cad/stl/` (build output, wiped each run).
+- `cad/export-all.sh` — exports every part to `cad/stl/` (build output, wiped each run; the front is exported upside down, ready to print).
+- `tools/pack-print.py` — turns `cad/stl/` into `do-druku/` (print orientation, sorted by stage: tests, fit check, lids). Start with `do-druku/00-START.md`.
 - `cad/glass_build.py` — Blender 4.5 script: imports the STLs, adds lenses/optics/mannequin, renders stills and a turntable into `renders/`.
 - `SHOPPING.md` — parts list with prices.
 - `RESEARCH.md` — what other DIY smart-glasses builds got right and wrong.
