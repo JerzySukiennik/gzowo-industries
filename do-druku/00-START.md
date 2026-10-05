@@ -1,5 +1,7 @@
 # G.L.A.S.S. v0.6: co drukować i w jakiej kolejności
 
+> **Aktualizacja 2026-10-05 (wynik testu 1):** otwory pod gwint 2,1 mm (1 kropka), przelotowe 3,0 mm (5 kropek). Zawias miał za duży luz: szczelina 7 mm dawała 2 mm chybotania w pionie. Teraz szczeliny po 0,3 mm (kostka zausznika 5 mm w szczelinie 5,6 mm), otwór w zausznikach 2,8 mm, a śruba dociska stos i **dokręcenie ustawia opór zawiasu**. Gwint w dolnej kostce 4,4 mm. Wszystkie STL w tym folderze są już przeliczone na te wartości. Ponów **tylko test zawiasu** (`01-testy/osobno/test-hinge-front.stl` + `test-hinge-temple.stl`, około 40 min), kupon śrub już niepotrzebny. Opis zawiasu niżej odnosi się do poprzedniej szczeliny 7 mm, teraz jest 5,6 mm.
+
 v0.6 to najnowsza wersja i **nigdy jeszcze nie była drukowana**. V0.5 nie mieściła śrub i nie dało się jej nosić, więc zanim wydrukujemy cały front (prawie 7 godzin), sprawdzamy trzy rzeczy na małych wydrukach: średnicę otworów na M2,5×12, pracę zawiasu i dopiero potem dopasowanie do głowy.
 
 Wszystkie pliki STL są **już obrócone do druku** (front do góry nogami, pokrywki łbem do stołu, zauszniki na boku). Nie używaj auto-orient ani ręcznego obracania.

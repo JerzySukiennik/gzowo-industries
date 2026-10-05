@@ -55,7 +55,7 @@ MIR      = [30, 30, 1.6];       // first-surface mirror, 1 pc
 LENS_D   = 30;  LENS_T = 6.5;   // biconvex f=50
 BTN      = [6, 6, 5];           // tact switch body
 BAT      = [40, 20, 8];         // battery pocket (y, z, x): edit when the cell is known
-S_TAP    = 2.4;  S_CLR = 2.9;  S_HEAD = 5.4;  // M2.5x12 in PLA
+S_TAP    = 2.1;  S_CLR = 3.0;  S_HEAD = 5.4;  // M2.5x12 in PLA, measured on the coupon 2026-10-05 (tap 1 pip = 2.1, clearance 5 pips = 3.0)
 CLR      = 0.4;  WALL = 1.6;
 
 // ---------------------------------------------------------------- layout ---
@@ -84,7 +84,8 @@ POD_LX   = -(66 + POD_L[0]/2);
 POD_RY   = 6;                  // right pod y-range -17..29
 POD_LY   = 2;                  // left pod y-range -30..34
 // hinge, M2.5x12 from the top: bottom knuckle 8 tapped, temple 5, top 2, gaps 0.5 -> 4 mm of thread, head proud
-HK_Z0 = 12; HK_BOT = 8; HK_TEMPLE = 5; HK_TOP = 1.5; HK_GAP = 1.0;   // slot 7 mm for the 5 mm knuckle (bridged when printed upside down); 12 mm screw: 1.5 + 1 + 5 + 1 = 8.5 above, 3.5 mm thread below
+HK_Z0 = 12; HK_BOT = 8; HK_TEMPLE = 5; HK_TOP = 2; HK_GAP = 0.3;   // 0.3 mm gaps: the screw clamps the stack, tightening it sets the hinge friction. 12 mm screw: 2 + 0.3 + 5 + 0.3 = 7.6 above the bottom knuckle, 4.4 mm of thread in it
+HK_BORE = 2.8;                // temple knuckle bore: snug on the 2.5 mm shank (lid holes stay at S_CLR)
 HK_NECK = 12;                  // the temple arm stays HK_TEMPLE tall out to this radius from the axis, so it swings clear of the knuckle blocks
 HK_R  = 5;                     // knuckle radius (bore 2.9 -> 3.5 mm wall)
 TEMPLE_W = 12;  TEMPLE_H = 14;
@@ -208,7 +209,7 @@ module temple(s) {
             translate([hx, hy, zk0+0.5]) cylinder(r=HK_R, h=HK_TEMPLE-1);
             translate([hx, hy, zk0+HK_TEMPLE-0.5]) cylinder(r1=HK_R, r2=HK_R-0.5, h=0.5);
         }
-        translate([hx, hy, HK_Z0-1]) clr(HK_BOT+HK_TEMPLE+2*HK_GAP+HK_TOP+3);   // bore cut LAST through everything
+        translate([hx, hy, HK_Z0-1]) cylinder(d=HK_BORE, h=HK_BOT+HK_TEMPLE+2*HK_GAP+HK_TOP+3);   // bore cut LAST through everything
     }
 }
 module temple_neck(s, zk0) {
