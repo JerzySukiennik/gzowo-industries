@@ -232,7 +232,7 @@ module temple_body(s, zk0) {
         }
         translate([hx-1.5, hy-TEMPLE_L+10, zk-1.5]) cube([3, TEMPLE_L-10+4, 3]);   // wire channel, exits on the root face
         if (s>0) { cy = hy-TEMPLE_L+16;
-            translate([hx-TEMPLE_W/2-0.2, cy, zk-1]) rotate([0,90,0]) cylinder(d=SPK_D+2*CLR, h=SPK_T+CLR+0.8);   // pocket, 0.8 mm grille face toward the head
+            translate([hx-TEMPLE_W/2-2.2, cy, zk-1]) rotate([0,90,0]) cylinder(d=SPK_D+2*CLR, h=SPK_T+CLR+0.8+2);   // pocket, OPEN toward the head: the speaker is pushed in from the head side and glued
             for (a=[0:45:315]) translate([hx-TEMPLE_W/2-2, cy+6*cos(a), zk-1+6*sin(a)]) rotate([0,90,0]) cylinder(d=1.6, h=4);
             translate([hx-TEMPLE_W/2-2, cy, zk-1]) rotate([0,90,0]) cylinder(d=1.6, h=4);
         }

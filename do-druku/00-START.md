@@ -59,7 +59,7 @@ Front to **największy wydruk projektu** (194 × 75 × 68 mm). Ma 60 cm³ objęt
 
 **Co sprawdzić na głowie** (zmierz i zgłoś liczby, wszystko jest parametrem): mostek nie dotyka nosa · noskówki leżą płasko na bokach nosa · zauszniki nie uciskają przed uszami i nie wchodzą w głowę · daszek nad prawym okiem nie zasłania więcej niż górny skrawek widzenia · odległość szybki od rzęs co najmniej 2 cm · front nie zsuwa się po nosie.
 
-Uwaga: `temple_r` ma kieszeń na głośnik, która w tym modelu jest **zamknięta ze wszystkich stron** (siatka dziurek po stronie głowy, z tyłu lity materiał), więc głośnika nie da się włożyć. Do przymiarki to bez znaczenia, ale **przed finałem poprawiam** kieszeń na otwartą.
+Kieszeń na głośnik w `temple_r` jest od 2026-10-07 **otwarta od strony głowy**: głośnik 20 mm wciskasz od środka i mocujesz kroplą kleju (kropla na obwodzie, nie na membranie).
 
 ## ETAP 3: finał (dopiero po przymiarce)
 
