@@ -85,6 +85,7 @@ POD_RY   = 6;                  // right pod y-range -17..29
 POD_LY   = 2;                  // left pod y-range -30..34
 // hinge, M2.5x12 from the top: bottom knuckle 8 tapped, temple 5, top 2, gaps 0.5 -> 4 mm of thread, head proud
 HK_Z0 = 12; HK_BOT = 8; HK_TEMPLE = 5; HK_TOP = 2; HK_GAP = 0.3;   // 0.3 mm gaps: the screw clamps the stack, tightening it sets the hinge friction. 12 mm screw: 2 + 0.3 + 5 + 0.3 = 7.6 above the bottom knuckle, 4.4 mm of thread in it
+HK_TAP = 2.3;                 // hinge tapped hole (coupon optimum 2.1 was for an open-top hole; here the mouth bridges over the gap and prints closed)
 HK_BORE = 2.8;                // temple knuckle bore: snug on the 2.5 mm shank (lid holes stay at S_CLR)
 HK_NECK = 12;                  // the temple arm stays HK_TEMPLE tall out to this radius from the axis, so it swings clear of the knuckle blocks
 HK_R  = 5;                     // knuckle radius (bore 2.9 -> 3.5 mm wall)
@@ -99,6 +100,7 @@ module plate(d) rotate([90,0,0]) translate([0,0,-d]) linear_extrude(height=d) ch
 module lens2d(mir=false) scale([mir ? -1 : 1, 1]) offset(r=3) offset(r=-3)
     polygon([[DBL/2,6],[54,6],[56,-3],[52,-17],[42,-24],[22,-25],[DBL/2+4,-20],[DBL/2,-7]]);
 module tap(l)  cylinder(d=S_TAP, h=l);
+module lead_in(z, d) translate([0, 0, z-0.65]) cylinder(d1=d, d2=d+1.3, h=0.66);   // 45 deg countersink at the hole mouth (z = face level): screw finds the hole, first layers cannot close it
 module clr(l)  cylinder(d=S_CLR, h=l);
 module head(l=3) cylinder(d=S_HEAD, h=l);
 function pod_c(s)   = s>0 ? [POD_RX, POD_RY, POD_Z0+POD_R[2]/2] : [POD_LX, POD_LY, POD_Z0+POD_L[2]/2];
@@ -142,7 +144,7 @@ module hood_cuts() {
     translate(COMB) rotate([-45,0,0]) translate([0, -(BS[2]+0.6)/2-1.5, 0]) cube([BS[0]+0.8, 3, BS[1]+6], center=true); // no knife edge at the mouth
     translate([HOOD_X0-1, -0.1, GROOVE_Z]) cube([WALL+2, GROOVE[1]+0.1, GROOVE[0]]);                // wires: bar groove -> hood
     translate([HOOD_X1-WALL-3, AX_Y-14, HOOD_Z0+WALL]) cube([WALL+6, 6, 5]);                         // wires: hood -> right pod
-    for (p=hood_boss_pts()) translate([p[0], p[1], HOOD_Z1-9]) tap(10);
+    for (p=hood_boss_pts()) translate([p[0], p[1], HOOD_Z1-9]) { tap(10); lead_in(9, S_TAP); }
 }
 module pod_shell(s) { c = pod_c(s); sz = pod_sz(s); rboxc([c[0]-sz[0]/2, c[1]-sz[1]/2, POD_Z0], sz, 3); }
 module pod_cavity(s) { c = pod_c(s); sz = pod_sz(s); translate([c[0]-sz[0]/2+WALL, c[1]-sz[1]/2+BACK_W, POD_Z0+WALL]) cube([sz[0]-2*WALL, sz[1]-WALL-BACK_W, sz[2]]); }
@@ -161,10 +163,11 @@ module pod_holders(s) {
 }
 module pod_cuts(s) {
     c = pod_c(s); sz = pod_sz(s); hx = hinge_x(s); hy = hinge_y(s);
-    for (p=pod_boss_pts(s)) translate([p[0], p[1], POD_Z0+sz[2]-9]) tap(10);
+    for (p=pod_boss_pts(s)) translate([p[0], p[1], POD_Z0+sz[2]-9]) { tap(10); lead_in(9, S_TAP); }
     ztop = HK_Z0+HK_BOT+HK_TEMPLE+2*HK_GAP;
     translate([hx, hy, ztop-1]) clr(HK_TOP+2);
-    translate([hx, hy, HK_Z0-1]) tap(HK_BOT+2);
+    translate([hx, hy, HK_Z0-1]) cylinder(d=HK_TAP, h=HK_BOT+2);   // hinge thread: the mouth is the ceiling of the printed gap (bridged), so it is cut bigger than the open-top coupon hole
+    translate([hx, hy, HK_Z0+HK_BOT]) lead_in(0, HK_TAP);
     translate([hx, hy, HK_Z0+HK_BOT-0.01]) cylinder(r=HK_R+CLR, h=HK_TEMPLE+2*HK_GAP+0.02);          // free swing for the temple knuckle
     if (s>0) translate([c[0]+4, c[1]-sz[1]/2-1, 16]) cube([3.5, BACK_W+2, 3.5]);                    // speaker wires to the temple
     if (s<0) {
@@ -284,7 +287,7 @@ module test_hinge_temple() { hx = hinge_x(TS); hy = hinge_y(TS); zk0 = HK_Z0+HK_
             translate([hx, hy, zk0+0.5]) cylinder(r=HK_R, h=HK_TEMPLE-1);
             translate([hx, hy, zk0+HK_TEMPLE-0.5]) cylinder(r1=HK_R, r2=HK_R-0.5, h=0.5);
         }
-        translate([hx, hy, HK_Z0-1]) clr(HK_BOT+HK_TEMPLE+2*HK_GAP+HK_TOP+3);
+        translate([hx, hy, HK_Z0-1]) cylinder(d=HK_BORE, h=HK_BOT+HK_TEMPLE+2*HK_GAP+HK_TOP+3);
     }
 }
 module flat_hinge_front() translate([-hinge_x(TS), hinge_y(TS), 0]) translate([0, 0, 38]) rotate([180,0,0]) test_hinge_front();   // hinge axis at the origin, pod toward -y, rim on the bed
