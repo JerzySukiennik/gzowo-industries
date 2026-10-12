@@ -1,72 +1,61 @@
-# G.L.A.S.S. v0.6: co drukować i w jakiej kolejności
+# G.L.A.S.S. v0.7: co drukować i w jakiej kolejności
 
-> **Aktualizacja 2026-10-05 (wynik testu 1):** otwory pod gwint 2,1 mm (1 kropka), przelotowe 3,0 mm (5 kropek). Zawias miał za duży luz: szczelina 7 mm dawała 2 mm chybotania w pionie. Teraz szczeliny po 0,3 mm (kostka zausznika 5 mm w szczelinie 5,6 mm), otwór w zausznikach 2,8 mm, a śruba dociska stos i **dokręcenie ustawia opór zawiasu**. Gwint w dolnej kostce 4,4 mm. Wszystkie STL w tym folderze są już przeliczone na te wartości. Ponów **tylko test zawiasu** (`01-testy/osobno/test-hinge-front.stl` + `test-hinge-temple.stl`, około 40 min), kupon śrub już niepotrzebny. Opis zawiasu niżej odnosi się do poprzedniej szczeliny 7 mm, teraz jest 5,6 mm.
+v0.7 to przebudowa po pierwszym pełnym wydruku v0.6 (2026-10-12): v0.6 zsuwała się po nosie, przechylała do przodu, zauszniki nie dotykały głowy i były za krótkie, obręcze ściskały nos, a pody wyglądały jak przyklejone klocki. Zawias, otwory i tolerancje śrub z v0.6 zostały (były przetestowane).
 
-v0.6 to najnowsza wersja i **nigdy jeszcze nie była drukowana**. V0.5 nie mieściła śrub i nie dało się jej nosić, więc zanim wydrukujemy cały front (prawie 7 godzin), sprawdzamy trzy rzeczy na małych wydrukach: średnicę otworów na M2,5×12, pracę zawiasu i dopiero potem dopasowanie do głowy.
+**Co się zmieniło**
 
-Wszystkie pliki STL są **już obrócone do druku** (front do góry nogami, pokrywki łbem do stołu, zauszniki na boku). Nie używaj auto-orient ani ręcznego obracania.
+- Zero podów. Dwie identyczne „brwi" 60 × 36 × 36 mm siedzą na przodzie płyty nad oczami. Prawa = optyka (OLED, lusterko, soczewka, szybka pod spodem). Lewa = elektronika (XIAO z kamerą patrzącą do przodu, bateria, wzmacniacz). Przycisk w prawej pokrywce, USB-C przez zewnętrzną ściankę lewej brwi.
+- Zawiasy na rogach płyty, 144 mm od siebie (było 162), zauszniki rozchylone tylko 7°, 17 mm dłuższe i schodzące do góry ucha. Każdy zawias ma płetwę, o którą zausznik opiera się w pozycji otwartej (nie wychyla się na zewnątrz).
+- Mostek typu „keyhole": wewnętrzne krawędzie obręczy odsuwają się od nosa w dół (wg skanu), a front opiera się na noskówkach 3,5 mm za płytą, na bokach nosa.
+- Front podzielony na części: po poprawce nosa drukujesz tylko płytę (ok. 2 h), nie całość.
+- Rowek na kable ma przeloty: lewa brew → płyta → rowek za mostkiem → prawa brew, i prawa brew → rowek → zawias → prawy zausznik (głośnik, 2 żyły, krótka pętla po wewnętrznej stronie zawiasu).
+
+Wszystkie STL są **już obrócone do druku**. Nie używaj auto-orient.
 
 ```
 do-druku/
-├── 00-START.md            ← ten plik
-├── 01-testy/              ← ETAP 1 (2 h 10 min)
-│   ├── test-plate.stl     ← kupon śrub + próbka zawiasu, jedna płytka
-│   └── osobno/            ← te same trzy części osobno (samo kupon: około 15 min)
-├── 02-przymiarka/         ← ETAP 2 (front + 2 zauszniki, bez elektroniki)
-├── 03-pokrywki/           ← ETAP 3 (dopiero po przymiarce)
-└── podglad/               ← zdjęcia modeli
+├── 00-START.md
+├── 01-testy/        test-plate.stl (kupon śrub + zawias v0.7 na jednej płytce) i te same części osobno
+├── 02-plyta/        plate.stl        ← ETAP 1: przymiarka nosa i zawiasów
+├── 03-zauszniki/    temple-r.stl, temple-l.stl   ← ETAP 1
+├── 04-brwi/         brow-r.stl, brow-l.stl       ← ETAP 2
+└── 05-pokrywki/     lid-r.stl, lid-l.stl         ← ETAP 2
 ```
 
-## Przed pierwszym wydrukiem (5 minut)
+## ETAP 1: płyta + zauszniki (przymiarka na głowie, ok. 3,5 h)
 
-- **M2,5×12 DIN 912**: potrzeba 14 na całość, na testy 3 do 4 sztuk. Klucz imbusowy 2 mm.
-- **Zmierz PD** (odległość źrenic): stań przed lustrem, przyłóż linijkę poziomo do nosa tuż pod oczami, patrz prosto w lustro i odczytaj odległość od środka jednej źrenicy do środka drugiej. W modelu jest na sztywno **62 mm**, to tylko roboczy zgadnięty wynik. Jeśli wyjdzie inaczej, zmieniam jedną liczbę i eksportuję od nowa.
-- Drukarka: X1C, dysza 0,4, PLA. Ta sama szpula na wszystkie testy i na finał (różne marki mają różny skurcz i luz).
-
-## ETAP 1: test tolerancji (`01-testy/test-plate.stl`)
-
-**Ustawienia (Bambu Studio):** 0.20mm Standard, 3 ścianki, wypełnienie 20 %, brim auto, **bez podpór**. Czas około 2 h 10 min, około 18 g PLA.
-
-Na płytce leżą trzy rzeczy:
-
-1. **Kupon śrub (długi blok z dwoma rzędami otworów).** Liczba kropek nad otworem = jego numer od lewej (1 do 6).
-   - *Blok z długim rowkiem, otwory ślepe* (`TAP`: 2,1 / 2,2 / 2,3 / 2,4 / 2,5 / 2,6 mm). Wkręć M2,5×12 w każdy. Szukamy **największego otworu, w którym śruba jeszcze trzyma mocno**. Model używa 2,4 (4 kropki).
-   - *Cienka płytka, otwory na wylot* (`CLR`: 2,6 / 2,7 / 2,8 / 2,9 / 3,0 / 3,1 mm). Szukamy **najmniejszego otworu, przez który śruba przechodzi i kręci się luźno**. Model używa 2,9 (4 kropki).
-2. **Próbka zawiasu, część ramy** (skrzynka z dwiema kostkami z tyłu). To prawdziwy zawias z frontu: górna i dolna kostka i szczelina 7 mm między nimi.
-3. **Próbka zawiasu, część zausznika** (mały ząbek z otworem, stoi na krawędzi, tak jak będzie drukowany zausznik).
-
-**Zawias, jak zmontować:** włóż ząbek zausznika w szczelinę między kostkami ramy, wkręć M2,5×12 od strony cienkiej (górnej) kostki, aż łeb dosiądzie. Sprawdź:
-
-- czy zausznik obraca się swobodnie o 90 stopni, bez zgrzytu i bez ocierania o kostki,
-- czy nie chybocze się bokiem więcej niż mniej więcej pół milimetra,
-- czy śruba łapie w dolnej (grubszej) kostce i nie przelatuje ani nie kręci się w miejscu,
-- czy szczelina 7 mm wydrukowała się czysto (brak zwisających nitek, które blokują ząbek),
-- czy łeb śruby wystaje z góry (ma wystawać).
-
-**Odeślij mi:** numer kropek TAP, numer kropek CLR i cztery odpowiedzi o zawiasie (tak, nie, ciasno, luźno). Wpisuję wartości jako `S_TAP` i `S_CLR`, eksportuję od nowa i dopiero wtedy ruszamy dalej.
-
-## ETAP 2: przymiarka (`02-przymiarka/`)
-
-Wydruk tylko do sprawdzenia kształtu na głowie: bez elektroniki, bez pokrywek, bez śrub poza zawiasami.
-
-| Plik | Ustawienia | Czas | PLA |
+| Plik | Orientacja (już ustawiona) | Ustawienia | Czas |
 |---|---|---|---|
-| `front.stl` | 0.28mm Extra Draft, 2 ścianki, wypełnienie 5 %, **bez podpór** | około 6 h 45 min (na noc) | około 55 g |
-| `temple_r.stl` | to samo | około 45 min | około 6 g |
-| `temple_l.stl` | to samo | około 45 min | około 6 g |
+| `02-plyta/plate.stl` | leży na przedniej ścianie, noskówki i zawiasy do góry | 0.20 mm Standard, 3 ścianki, 20 %, **bez podpór** | ok. 2 h |
+| `03-zauszniki/temple-r.stl` | na zewnętrznym boku, kieszeń głośnika do góry | to samo, brim | ok. 45 min |
+| `03-zauszniki/temple-l.stl` | to samo | to samo, brim | ok. 45 min |
 
-Front to **największy wydruk projektu** (194 × 75 × 68 mm). Ma 60 cm³ objętości, prawie całą w ściankach, dlatego nawet wersja robocza trwa prawie 7 godzin. Z podporami byłoby 10 godzin, więc na przymiarkę ich nie dajemy (możliwe lekkie zwisy noskówek i górnych łuków obręczy, to nie szkodzi).
+Zauszniki wkładasz w szczelinę między kostkami na rogach płyty i skręcasz 2 × M2,5×12 od góry (jak w teście zawiasu). Płetwa obok zawiasu ma blokować otwieranie poza pozycję prostą.
 
-**Co sprawdzić na głowie** (zmierz i zgłoś liczby, wszystko jest parametrem): mostek nie dotyka nosa · noskówki leżą płasko na bokach nosa · zauszniki nie uciskają przed uszami i nie wchodzą w głowę · daszek nad prawym okiem nie zasłania więcej niż górny skrawek widzenia · odległość szybki od rzęs co najmniej 2 cm · front nie zsuwa się po nosie.
+**Sprawdź na głowie i napisz:**
+1. Czy front opiera się na noskówkach (po bokach nosa), a nie krawędziami obręczy. Gdzie uciska, jeśli uciska.
+2. Czy zagięcie zausznika ląduje na górze ucha, czy przed nim, czy za nim (ile mm).
+3. Czy zauszniki dotykają głowy nad uszami i trzymają, czy wiszą luźno.
+4. Czy okulary siedzą poziomo i nie zjeżdżają po nosie.
+5. Czy zausznik opiera się o płetwę i nie wychyla na zewnątrz; czy składa się do środka.
 
-Kieszeń na głośnik w `temple_r` jest od 2026-10-07 **otwarta od strony głowy**: głośnik 20 mm wciskasz od środka i mocujesz kroplą kleju (kropla na obwodzie, nie na membranie).
+Każda z tych rzeczy to jeden parametr w `cad/glass.scad` (`PAD_X`, `PAD_Z`, `TEMPLE_L`, `TEMPLE_SPLAY`, `EAR_Z`, `VD`). Po poprawce drukujesz tylko płytę albo tylko zauszniki.
 
-## ETAP 3: finał (dopiero po przymiarce)
+## ETAP 2: brwi + pokrywki (dopiero gdy płyta pasuje)
 
-1. `03-pokrywki/`: `lid_hood.stl` (25 min), `lid_l.stl` (25 min), `lid_r.stl` (20 min). 0.20mm Standard, 3 ścianki. Są liczone na otwory z Etapu 1, po zmianie `S_CLR` eksportuję je od nowa, więc **nie drukuj ich przed wynikami testu**.
-2. Finałowy front i zauszniki z poprawkami z przymiarki: 0.20mm Standard, 3 ścianki, 20 %, około 8 h. Podpory tylko, jeśli podgląd w slicerze ich wymaga.
-3. Na końcu sprawdzenie z elektroniką po dostawie części (pozycje OLED, XIAO, szybka).
+| Plik | Orientacja | Ustawienia | Czas |
+|---|---|---|---|
+| `04-brwi/brow-r.stl`, `brow-l.stl` | otwarte od góry, dnem na stole | 0.20 mm Standard, 3 ścianki, 20 %, bez podpór | ok. 1 h 15 min każda |
+| `05-pokrywki/lid-r.stl`, `lid-l.stl` | zewnętrzną stroną na stole, klatka przycisku do góry | 0.20 mm Standard, 3 ścianki | ok. 20 min każda |
 
-## Jak to powstaje (dla porządku)
+Brwi przykręcasz do płyty **od tyłu** (łby śrub chowają się w belce nad mostkiem): 2 × M2,5×12 na brew. Pokrywki: 4 × M2,5×12 na brew, wchodzą równo z górną krawędzią. Razem na całość: 2 (zawiasy) + 4 (brwi) + 8 (pokrywki) = **14 × M2,5×12**.
 
-`cad/glass.scad` jest źródłem prawdy. `cad/export-all.sh` eksportuje części do `cad/stl/`, a `python3 tools/pack-print.py` obraca je do druku i układa w `do-druku/`. Czasy i ilości filamentu liczone w Bambu Studio (profil X1C 256 × 256, Generic PLA).
+## Do potwierdzenia po dostawie części
+
+- Pozycja obiektywu kamery i USB-C na realnym XIAO (okno Ø7 w przedniej ściance i wycięcie w zewnętrznej ściance lewej brwi).
+- Wymiary baterii (w modelu 40 × 20 × 8 mm, stoi na półce przy tylnej ścianie lewej brwi).
+- Offset aktywnego pola OLED (`OLED_X`, zakres przesuwu 60..66 = ostrość 14..31 cm).
+
+## Jak to powstaje
+
+`cad/glass.scad` jest źródłem prawdy. `cad/export-all.sh` eksportuje części w orientacji do druku do `cad/stl/`, a `python3 tools/pack-print.py` układa je w `do-druku/`. Widoki kontrolne w SCAD: `part="fit"` (elektronika i optyka w brwiach), `part="fold"` (złożone zauszniki), `part="assembly"` (ze skanem głowy).
