@@ -97,6 +97,7 @@ FIN_T = 3;
 ARM_W0 = 6;  ARM_H0 = 9;       // section at the neck end (x thickness, z height)
 ARM_W1 = 4;  ARM_H1 = 5;       // section at the tip
 TEMPLE_L = 80;                 // hinge -> start of the ear bend (bend crest lands on the ear top)
+KN_FLAT  = HK_R - 0.4;         // knuckle outer flat at 4.6 mm from the axis (the arm lies on the bed along its whole length)
 HOOK_DROP = 26;                // ear hook: how far the tip goes down behind the ear
 HOOK_IN   = 0;                 // inward curl would be an overhang when printed flat; grip comes from the drop and the splay
 SPEAKER   = false;             // 2026-10-14 Jurek: no speaker in the temple for now (medallion, pocket and wire channel off)
@@ -227,6 +228,8 @@ module temple(s) { hx = s*HX;
             translate([hx, HY, zk0(s)+HK_TEMPLE-0.5]) cylinder(r1=HK_R, r2=HK_R-0.5, h=0.5);
         }
         translate([hx, HY, hk_z0(s)-1]) cylinder(d=HK_BORE, h=HK_BOT+HK_TEMPLE+2*HK_GAP+HK_TOP+3);   // bore cut LAST through everything
+        translate([hx, HY, 0]) rotate([0,0,s*TEMPLE_SPLAY]) translate([-hx, -HY, 0])
+            translate([s>0 ? hx+KN_FLAT : hx-KN_FLAT-30, HY-200, -60]) cube([30, 400, 160]);             // outer flat parallel to the arm: knuckle and arm share one bed plane
     }
 }
 module temple_neck(s) { hx = s*HX;
@@ -243,8 +246,8 @@ module temple_body(s) {
     difference() {
         union() {
             temple_neck(s);
-            hull() { translate([hx-HK_R, HY-HK_NECK, zk0(s)]) cube([2*HK_R, 0.01, HK_TEMPLE]); translate([hx, HY-HK_NECK-6, z0]) section(ARM_W0, ARM_H0); }
-            for (i=[0:N-1]) hull() for (t=[i/N, (i+1)/N]) { q = bez(p0,p1,p2,p3,t); translate([hx+q[0], HY+q[1], z0+q[2]]) section(ARM_W0+(ARM_W1-ARM_W0)*t, ARM_H0+(ARM_H1-ARM_H0)*t); }
+            hull() { translate([hx-HK_R, HY-HK_NECK, zk0(s)]) cube([2*HK_R, 0.01, HK_TEMPLE]); translate([hx+s*(KN_FLAT-ARM_W0/2), HY-HK_NECK-6, z0]) section(ARM_W0, ARM_H0); }
+            for (i=[0:N-1]) hull() for (t=[i/N, (i+1)/N]) { q = bez(p0,p1,p2,p3,t); w = ARM_W0+(ARM_W1-ARM_W0)*t; translate([hx+s*(KN_FLAT-w/2)+q[0], HY+q[1], z0+q[2]]) section(w, ARM_H0+(ARM_H1-ARM_H0)*t); }   // the OUTER face stays on one plane, the taper eats the inner side
             if (SPEAKER && s>0) hull() {                                                                                         // speaker medallion, in the plane of the arm
                 translate([hx, HY+SPK_Y, z0-7.5]) rotate([0,90,0]) cylinder(d=SPK_D+5, h=ARM_W0, center=true);
                 translate([hx, HY+SPK_Y, z0]) section(ARM_W0, ARM_H0);
@@ -305,7 +308,7 @@ module test_hinge_temple() { hx = TS*HX;
 module pr_plate()   if (print_orient) translate([0, 0, FRONT_T]) rotate([-90,0,0]) plate(); else plate();          // front face on the bed, pads and knuckles up
 module pr_brow(s)   if (print_orient) translate([0, 0, -BROW_Z0]) brow(s); else brow(s);                              // open top up
 module pr_lid(s)    if (print_orient) translate([0, 0, BROW_Z1]) rotate([180,0,0]) lid(s); else lid(s);               // outer face on the bed, pockets and cage up
-module pr_temple(s) if (print_orient) translate([0, 0, HX+ARM_W0/2]) rotate([0, s*90, 0]) translate([s*HX, HY, 0]) rotate([0,0,-s*TEMPLE_SPLAY]) translate([-s*HX, -HY, 0]) temple(s); else temple(s);   // flat outer face on the bed
+module pr_temple(s) if (print_orient) translate([0, 0, HX+KN_FLAT]) rotate([0, s*90, 0]) translate([s*HX, HY, 0]) rotate([0,0,-s*TEMPLE_SPLAY]) translate([-s*HX, -HY, 0]) temple(s); else temple(s);   // flat outer face on the bed
 module pr_test_front()  if (print_orient) translate([0, 0, FRONT_T]) rotate([-90,0,0]) test_hinge_front(); else test_hinge_front();
 module pr_test_temple() if (print_orient) translate([0, 0, -zk0(TS)]) translate([TS*HX, HY, 0]) rotate([0,0,-TS*TEMPLE_SPLAY]) translate([-TS*HX, -HY, 0]) test_hinge_temple(); else test_hinge_temple();
 
