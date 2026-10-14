@@ -1,6 +1,8 @@
-# G.L.A.S.S. v0.7: co drukować i w jakiej kolejności
+# G.L.A.S.S. v0.8: co drukować i w jakiej kolejności
 
-v0.7 to przebudowa po pierwszym pełnym wydruku v0.6 (2026-10-12): v0.6 zsuwała się po nosie, przechylała do przodu, zauszniki nie dotykały głowy i były za krótkie, obręcze ściskały nos, a pody wyglądały jak przyklejone klocki. Zawias, otwory i tolerancje śrub z v0.6 zostały (były przetestowane).
+**v0.8 (2026-10-14, po wydruku v0.7):** brwi i pokrywki na **magnesach Ø6×2** zamiast śrub (3 magnesy + 2 kołki na brew, 4 magnesy na pokrywkę), śruby zostają tylko w zawiasach. Zauszniki smukłe (6×9 → 4×6 mm) z hakiem za ucho i płaskim medalionem głośnika, drukowane płasko na zewnętrznym boku bez podpór. Lewy zawias 8 mm wyżej, żeby zauszniki składały się jeden nad drugim. Noskówki pochylone pod nos (30°), większe. Słupki pokrywek od podłogi do góry. Zestaw magnesów na całość: 2 × 3 (płyta) + 2 × 3 (brwi) + 2 × 4 (słupki) + 2 × 4 (pokrywki) = **28 szt.**
+
+v0.7 było przebudową po pierwszym pełnym wydruku v0.6 (2026-10-12): v0.6 zsuwała się po nosie, przechylała do przodu, zauszniki nie dotykały głowy i były za krótkie, obręcze ściskały nos, a pody wyglądały jak przyklejone klocki. Zawias, otwory i tolerancje śrub z v0.6 zostały (były przetestowane).
 
 **Co się zmieniło**
 
@@ -27,10 +29,12 @@ do-druku/
 | Plik | Orientacja (już ustawiona) | Ustawienia | Czas |
 |---|---|---|---|
 | `02-plyta/plate.stl` | leży na przedniej ścianie, noskówki i zawiasy do góry | 0.20 mm Standard, 3 ścianki, 20 %, **bez podpór** | ok. 2 h |
-| `03-zauszniki/temple-r.stl` | na zewnętrznym boku, kieszeń głośnika do góry | to samo, brim | ok. 45 min |
-| `03-zauszniki/temple-l.stl` | to samo | to samo, brim | ok. 45 min |
+| `03-zauszniki/temple-r.stl` | płasko na zewnętrznym boku, kieszeń głośnika do góry | to samo, brim, **bez podpór** | ok. 30 min |
+| `03-zauszniki/temple-l.stl` | płasko na zewnętrznym boku | to samo, brim, **bez podpór** | ok. 25 min |
 
-Zauszniki wkładasz w szczelinę między kostkami na rogach płyty i skręcasz 2 × M2,5×12 od góry (jak w teście zawiasu). Płetwa obok zawiasu ma blokować otwieranie poza pozycję prostą.
+Zauszniki wkładasz w szczelinę między kostkami na rogach płyty i skręcasz 2 × M2,5×12 od góry (jak w teście zawiasu). Płetwa obok zawiasu blokuje otwieranie poza pozycję prostą. Lewy zawias jest celowo 8 mm wyżej niż prawy: przy składaniu najpierw prawy zausznik, potem lewy nad nim.
+
+**Magnesy w płycie:** 3 gniazda Ø6,4 na przedniej ścianie belki po każdej stronie. Wklej magnesy (kropla CA) tak, żeby **wszystkie sześć miały ten sam biegun na zewnątrz**. Potem magnesy w brwiach wkładaj przyciągając je do płyty, wtedy biegunowość sama się ustawi, i dopiero wklej.
 
 **Sprawdź na głowie i napisz:**
 1. Czy front opiera się na noskówkach (po bokach nosa), a nie krawędziami obręczy. Gdzie uciska, jeśli uciska.
@@ -46,9 +50,9 @@ Każda z tych rzeczy to jeden parametr w `cad/glass.scad` (`PAD_X`, `PAD_Z`, `TE
 | Plik | Orientacja | Ustawienia | Czas |
 |---|---|---|---|
 | `04-brwi/brow-r.stl`, `brow-l.stl` | otwarte od góry, dnem na stole | 0.20 mm Standard, 3 ścianki, 20 %, bez podpór | ok. 1 h 15 min każda |
-| `05-pokrywki/lid-r.stl`, `lid-l.stl` | zewnętrzną stroną na stole, klatka przycisku do góry | 0.20 mm Standard, 3 ścianki | ok. 20 min każda |
+| `05-pokrywki/lid-r.stl`, `lid-l.stl` | zewnętrzną stroną na stole, kieszenie magnesów i klatka przycisku do góry | 0.20 mm Standard, 3 ścianki | ok. 20 min każda |
 
-Brwi przykręcasz do płyty **od tyłu** (łby śrub chowają się w belce nad mostkiem): 2 × M2,5×12 na brew. Pokrywki: 4 × M2,5×12 na brew, wchodzą równo z górną krawędzią. Razem na całość: 2 (zawiasy) + 4 (brwi) + 8 (pokrywki) = **14 × M2,5×12**.
+Brwi trzymają się płyty na 3 magnesach i 2 kołkach ustalających (kołki na tylnej ścianie brwi wchodzą w otwory w płycie nad magnesami). Brew zdejmujesz, ciągnąc do przodu. Pokrywki trzymają się na 4 magnesach w narożnych słupkach, wchodzą równo z górną krawędzią; magnesy w pokrywce wklej od spodu (kieszenie są od strony wewnętrznej, od góry zostaje 0,7 mm skóry). Śruby na całość: tylko **2 × M2,5×12** w zawiasach. Prawa brew: okrągła kieszeń na soczewkę w podłodze, skośna szczelina pod spodem, przycisk w pokrywce. Lewa: okno kamery z przodu, wycięcie USB-C na zewnętrznym końcu.
 
 ## Do potwierdzenia po dostawie części
 
