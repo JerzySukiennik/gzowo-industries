@@ -5,7 +5,7 @@ set -e
 cd "$(dirname "$0")"
 O=/Applications/OpenSCAD-2021.01.app/Contents/MacOS/OpenSCAD
 rm -rf stl && mkdir -p stl
-PARTS="plate brow_r brow_l lid_r lid_l temple_r temple_l test_hinge_front test_hinge_temple test_plate"
+PARTS="plate arm box_r box_l lid_r lid_l temple_r temple_l test_hinge_front test_hinge_temple test_plate"
 for p in $PARTS; do
   ( $O -o "stl/$p.stl" -D "part=\"$p\"" -D "show_parts=false" -D "print_orient=true" glass.scad > "stl/$p.log" 2>&1 ; echo "exported $p" ) &
 done

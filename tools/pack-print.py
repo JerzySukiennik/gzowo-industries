@@ -12,9 +12,9 @@ BED = 128.0
 
 STAGES = {
     "01-testy": ["test_plate", "test_hinge_front", "test_hinge_temple", "screw-coupon"],
-    "02-plyta": ["plate"],
+    "02-plyta": ["plate", "arm"],
     "03-zauszniki": ["temple_r", "temple_l"],
-    "04-brwi": ["brow_r", "brow_l"],
+    "04-boxy": ["box_r", "box_l"],
     "05-pokrywki": ["lid_r", "lid_l"],
 }
 

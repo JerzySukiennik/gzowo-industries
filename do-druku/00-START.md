@@ -1,65 +1,48 @@
-# G.L.A.S.S. v0.8: co drukować i w jakiej kolejności
+# G.L.A.S.S. v0.9: co drukować i w jakiej kolejności
 
-**v0.8 (2026-10-14, po wydruku v0.7):** brwi i pokrywki na **magnesach Ø6×2** zamiast śrub (3 magnesy + 2 kołki na brew, 4 magnesy na pokrywkę), śruby zostają tylko w zawiasach. Zauszniki smukłe (6×9 → 4×6 mm) z hakiem za ucho i płaskim medalionem głośnika, drukowane płasko na zewnętrznym boku bez podpór. Lewy zawias 8 mm wyżej, żeby zauszniki składały się jeden nad drugim. Noskówki pochylone pod nos (30°), większe. Słupki pokrywek od podłogi do góry. Zestaw magnesów na całość: 2 × 3 (płyta) + 2 × 3 (brwi) + 2 × 4 (słupki) + 2 × 4 (pokrywki) = **28 szt.**
-
-v0.7 było przebudową po pierwszym pełnym wydruku v0.6 (2026-10-12): v0.6 zsuwała się po nosie, przechylała do przodu, zauszniki nie dotykały głowy i były za krótkie, obręcze ściskały nos, a pody wyglądały jak przyklejone klocki. Zawias, otwory i tolerancje śrub z v0.6 zostały (były przetestowane).
-
-**Co się zmieniło**
-
-- Zero podów. Dwie identyczne „brwi" 60 × 36 × 36 mm siedzą na przodzie płyty nad oczami. Prawa = optyka (OLED, lusterko, soczewka, szybka pod spodem). Lewa = elektronika (XIAO z kamerą patrzącą do przodu, bateria, wzmacniacz). Przycisk w prawej pokrywce, USB-C przez zewnętrzną ściankę lewej brwi.
-- Zawiasy na rogach płyty, 144 mm od siebie (było 162), zauszniki rozchylone tylko 7°, 17 mm dłuższe i schodzące do góry ucha. Każdy zawias ma płetwę, o którą zausznik opiera się w pozycji otwartej (nie wychyla się na zewnątrz).
-- Mostek typu „keyhole": wewnętrzne krawędzie obręczy odsuwają się od nosa w dół (wg skanu), a front opiera się na noskówkach 3,5 mm za płytą, na bokach nosa.
-- Front podzielony na części: po poprawce nosa drukujesz tylko płytę (ok. 2 h), nie całość.
-- Rowek na kable ma przeloty: lewa brew → płyta → rowek za mostkiem → prawa brew, i prawa brew → rowek → zawias → prawy zausznik (głośnik, 2 żyły, krótka pętla po wewnętrznej stronie zawiasu).
-
-Wszystkie STL są **już obrócone do druku**. Nie używaj auto-orient.
+**v0.9 (2026-10-23):** boxy z elektroniką przeniesione z przodu na boki, za zawiasy. Każdy box (22 × 86 × 34 mm) trzyma się na 3 magnesach Ø6×2 i 2 kołkach na szynie wyrastającej z rogu płyty; szyna jest też blokadą zausznika, a zausznik składa się pod boxem. Front to sama płyta plus **ramię HUD** (nowa część `arm.stl`) przykręcane 2 × M2,5×12 do przodu płyty: trzyma soczewkę i szybkę przed prawym okiem. OLED stoi w przedniej części prawego boxu i świeci przez okienko do środka na soczewkę, bez lusterka (obraz lustrzany poziomo, firmware odwraca jednym rejestrem SSD1306). Lewy box: XIAO z przodu (kamera przez przednią ściankę, USB-C przez pokrywkę), bateria za nim, wzmacniacz na dnie. Pokrywki na 4 magnesach. Magnesy na całość: 2 × 3 (szyny) + 2 × 3 (boxy) + 2 × 4 (słupki) + 2 × 4 (pokrywki) = **28 szt.** Śruby: 2 (zawiasy) + 2 (ramię) = **4 × M2,5×12**.
 
 ```
 do-druku/
 ├── 00-START.md
-├── 01-testy/        test-plate.stl (kupon śrub + zawias v0.7 na jednej płytce) i te same części osobno
-├── 02-plyta/        plate.stl        ← ETAP 1: przymiarka nosa i zawiasów
+├── 01-testy/        kupon śrub i test zawiasu (tylko gdy coś nie pasuje)
+├── 02-plyta/        plate.stl + arm.stl          ← ETAP 1 (z zausznikami)
 ├── 03-zauszniki/    temple-r.stl, temple-l.stl   ← ETAP 1
-├── 04-brwi/         brow-r.stl, brow-l.stl       ← ETAP 2
+├── 04-boxy/         box-r.stl, box-l.stl         ← ETAP 2
 └── 05-pokrywki/     lid-r.stl, lid-l.stl         ← ETAP 2
 ```
 
-## ETAP 1: płyta + zauszniki (przymiarka na głowie, ok. 3,5 h)
+Wszystkie STL są **już obrócone do druku**. Nie używaj auto-orient. Podpory wyłączone dla wszystkiego.
+
+## ETAP 1: płyta, ramię, zauszniki (ok. 3,5 h)
 
 | Plik | Orientacja (już ustawiona) | Ustawienia | Czas |
 |---|---|---|---|
-| `02-plyta/plate.stl` | leży na przedniej ścianie, noskówki i zawiasy do góry | 0.20 mm Standard, 3 ścianki, 20 %, **bez podpór** | ok. 2 h |
-| `03-zauszniki/temple-r.stl` | płasko na zewnętrznym boku, kieszeń głośnika do góry | to samo, brim, **bez podpór** | ok. 30 min |
-| `03-zauszniki/temple-l.stl` | płasko na zewnętrznym boku | to samo, brim, **bez podpór** | ok. 25 min |
+| `02-plyta/plate.stl` | przednią ścianą na stole, noskówki, zawiasy i szyny do góry | 0.20 Standard lub Strength, bez podpór | ok. 2 h 15 min |
+| `02-plyta/arm.stl` | tylną ścianą na stole, pierścień soczewki i głowica szybki do góry | to samo | ok. 25 min |
+| `03-zauszniki/temple-r.stl`, `temple-l.stl` | płasko na zewnętrznym boku, brim | to samo | po ok. 25 min |
 
-Zauszniki wkładasz w szczelinę między kostkami na rogach płyty i skręcasz 2 × M2,5×12 od góry (jak w teście zawiasu). Płetwa obok zawiasu blokuje otwieranie poza pozycję prostą. Lewy zawias jest celowo 8 mm wyżej niż prawy: przy składaniu najpierw prawy zausznik, potem lewy nad nim.
+Montaż: zauszniki w szczeliny zawiasów (lewy zawias jest 12 mm wyżej, to celowe), 2 × M2,5×12 od góry. Ramię HUD: dwa otwory z przodu płyty nad prawym okiem, 2 × M2,5×12 od przodu, łby chowają się w ramieniu. Soczewkę wsuwasz w pierścień od strony zewnętrznej (od boxu) i przyklejasz 3 kroplami na obwodzie; szybkę wsuwasz od dołu w skośną szczelinę w głowicy ramienia i przyklejasz górną krawędź.
 
-**Magnesy w płycie:** 3 gniazda Ø6,4 na przedniej ścianie belki po każdej stronie. Wklej magnesy (kropla CA) tak, żeby **wszystkie sześć miały ten sam biegun na zewnątrz**. Potem magnesy w brwiach wkładaj przyciągając je do płyty, wtedy biegunowość sama się ustawi, i dopiero wklej.
+**Magnesy w szynach:** 3 gniazda na zewnętrznej ścianie każdej szyny. Wklej wszystkie 6 tym samym biegunem na zewnątrz. Magnesy do boxów wkładaj przyciągając do szyny, wtedy biegun ustawi się sam.
 
-**Sprawdź na głowie i napisz:**
-1. Czy front opiera się na noskówkach (po bokach nosa), a nie krawędziami obręczy. Gdzie uciska, jeśli uciska.
-2. Czy zagięcie zausznika ląduje na górze ucha, czy przed nim, czy za nim (ile mm).
-3. Czy zauszniki dotykają głowy nad uszami i trzymają, czy wiszą luźno.
-4. Czy okulary siedzą poziomo i nie zjeżdżają po nosie.
-5. Czy zausznik opiera się o płetwę i nie wychyla na zewnątrz; czy składa się do środka.
+**Sprawdź na głowie i napisz:** czy front leży na noskówkach i nie zjeżdża, czy haki łapią za uszy, czy zauszniki trzymają przy głowie, czy ramię HUD nie dotyka rzęs (szybka jest 44 mm przed okiem), czy przez szybkę widać normalnie.
 
-Każda z tych rzeczy to jeden parametr w `cad/glass.scad` (`PAD_X`, `PAD_Z`, `TEMPLE_L`, `TEMPLE_SPLAY`, `EAR_Z`, `VD`). Po poprawce drukujesz tylko płytę albo tylko zauszniki.
-
-## ETAP 2: brwi + pokrywki (dopiero gdy płyta pasuje)
+## ETAP 2: boxy i pokrywki (po przymiarce)
 
 | Plik | Orientacja | Ustawienia | Czas |
 |---|---|---|---|
-| `04-brwi/brow-r.stl`, `brow-l.stl` | otwarte od góry, dnem na stole | 0.20 mm Standard, 3 ścianki, 20 %, bez podpór | ok. 1 h 15 min każda |
-| `05-pokrywki/lid-r.stl`, `lid-l.stl` | zewnętrzną stroną na stole, kieszenie magnesów i klatka przycisku do góry | 0.20 mm Standard, 3 ścianki | ok. 20 min każda |
+| `04-boxy/box-r.stl`, `box-l.stl` | otwarte od góry, dnem na stole, kołki i magnesy w stronę płyty | bez podpór | po ok. 1 h |
+| `05-pokrywki/lid-r.stl`, `lid-l.stl` | zewnętrzną stroną na stole | | po ok. 20 min |
 
-Brwi trzymają się płyty na 3 magnesach i 2 kołkach ustalających (kołki na tylnej ścianie brwi wchodzą w otwory w płycie nad magnesami). Brew zdejmujesz, ciągnąc do przodu. Pokrywki trzymają się na 4 magnesach w narożnych słupkach, wchodzą równo z górną krawędzią; magnesy w pokrywce wklej od spodu (kieszenie są od strony wewnętrznej, od góry zostaje 0,7 mm skóry). Śruby na całość: tylko **2 × M2,5×12** w zawiasach. Prawa brew: okrągła kieszeń na soczewkę w podłodze, skośna szczelina pod spodem, przycisk w pokrywce. Lewa: okno kamery z przodu, wycięcie USB-C na zewnętrznym końcu.
+Box nasuwasz na szynę od zewnątrz: kołki w otwory, magnesy łapią. Zdejmujesz, odciągając w bok. Prawy box ma okienko w wewnętrznej ściance (na wysokości soczewki) i klatkę przycisku w pokrywce; lewy ma okno kamery z przodu i wycięcie USB-C w pokrywce. Kable z lewego boxu do prawego: otwór w wewnętrznej ściance lewego boxu → rowek z tyłu lewego rogu → rowek z tyłu belki → przelot przez płytę przy prawym rogu → rowek z przodu prawego rogu (pod ramieniem HUD) → otwór w prawym boxie.
 
 ## Do potwierdzenia po dostawie części
 
-- Pozycja obiektywu kamery i USB-C na realnym XIAO (okno Ø7 w przedniej ściance i wycięcie w zewnętrznej ściance lewej brwi).
-- Wymiary baterii (w modelu 40 × 20 × 8 mm, stoi na półce przy tylnej ścianie lewej brwi).
-- Offset aktywnego pola OLED (`OLED_X`, zakres przesuwu 60..66 = ostrość 14..31 cm).
+- Pozycja kamery i USB-C na realnym XIAO (okno Ø7 w przedniej ściance lewego boxu, wycięcie w pokrywce).
+- Wymiary baterii (w modelu 40 × 20 × 8 mm, leży za XIAO).
+- Pozycja OLED-a w prawym boxie (`OLED_X`, przesuw ±3 mm na szynach = ostrość).
 
 ## Jak to powstaje
 
-`cad/glass.scad` jest źródłem prawdy. `cad/export-all.sh` eksportuje części w orientacji do druku do `cad/stl/`, a `python3 tools/pack-print.py` układa je w `do-druku/`. Widoki kontrolne w SCAD: `part="fit"` (elektronika i optyka w brwiach), `part="fold"` (złożone zauszniki), `part="assembly"` (ze skanem głowy).
+`cad/glass.scad` jest źródłem prawdy. `cad/export-all.sh` eksportuje części w orientacji do druku do `cad/stl/`, `python3 tools/pack-print.py` układa je w `do-druku/`, `cad/export-asm.sh` eksportuje zestaw w orientacji złożonej do renderów i filmu (`film/film_build.py`).
