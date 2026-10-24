@@ -86,7 +86,7 @@ def import_stl(name, m):
     bpy.ops.wm.stl_import(filepath=os.path.join(STL, name + '.stl'))
     o = bpy.context.selected_objects[0]; o.name = name
     o.data.materials.append(m)
-    try: bpy.ops.object.shade_auto_smooth(angle=math.radians(35))
+    try: bpy.ops.object.shade_auto_smooth(angle=math.radians(40))
     except Exception:
         for p in o.data.polygons: p.use_smooth = True
     return o
@@ -144,25 +144,26 @@ def text(name, body, size, loc, m, align='CENTER'):
     return t
 
 CAPS = [   # (start, end, text, size, z, behind: -1 = behind the model for a camera in front, +1 = behind for a camera at the back)
-    (6.5, 13.5, 'Smart glasses. Built at home.', 17, 44, -1),
-    (14.5, 21.5, 'A display in your line of sight.', 14, 40, -1),
-    (23.0, 30.5, 'Snap on. Snap off.', 17, -40, 1),
-    (31.5, 38.5, 'Printed, not molded.', 17, -60, 1),
-    (40.0, 48.5, 'An assistant that talks back.', 17, 44, -1),
+    (6.5, 13.5, 'Smart glasses. Built at home.', 26, 52, -1),
+    (14.5, 21.5, 'A display in your line of sight.', 13, -36, -3),
+    (23.0, 30.5, 'Snap on. Snap off.', 28, -40, 1),
+    (31.5, 38.5, 'Printed, not molded.', 28, -60, 1),
+    (40.0, 48.5, 'An assistant that talks back.', 18, 50, -2),
 ]
 cap_objs = []
 for i, (t0, t1, body, size, z, side) in enumerate(CAPS):
-    t = text(f'cap{i}', body, size, (0, side * 140, z), M_TEXT if i % 2 == 0 else M_TEXT2)
-    if side > 0: t.rotation_euler = Euler((0, 0, 0), 'XYZ'); t.location = (0, 80, z)   # lies on the floor beyond the glasses, read from the camera behind-above
+    t = text(f'cap{i}', body, size, (0, -140 if side == -1 else -60, z), M_TEXT if i % 2 == 0 else M_TEXT2)   # side -2: close behind the model (less parallax during the orbit)
+    if side > 0: t.rotation_euler = Euler((0, 0, 0), 'XYZ'); t.location = (0, 160, z)   # lies on the floor beyond the glasses, read from the camera behind-above
+    if side == -3: t.rotation_euler = Euler((0, 0, math.radians(142)), 'XYZ'); t.location = (40, 30, z)   # on the floor under the HUD arm, read from the close-up camera at +x+y
     t.hide_render = True; t.keyframe_insert('hide_render', frame=1)
     t.hide_render = False; t.keyframe_insert('hide_render', frame=sec(t0))
     t.hide_render = True; t.keyframe_insert('hide_render', frame=sec(t1))
     cap_objs.append((t, t0, t1))
 
-title = text('title', 'G.L.A.S.S.', 36, (0, -120, 48), mat('title', (1, 1, 1), emit=(1, 1, 1), strength=0))
-tagline = text('tagline', 'See more. Look normal.', 13, (0, -120, -70), mat('tagline', (1, 1, 1), emit=(1, 1, 1), strength=0))
-url = text('url', 'industries.gzowo.fun', 10, (0, -120, -88), mat('url', (1, 1, 1), emit=(1, 1, 1), strength=0))
-intro = text('intro', 'Gzowo Industries', 12, (0, -140, 50), mat('intro', (1, 1, 1), emit=(1, 1, 1), strength=0))
+title = text('title', 'G.L.A.S.S.', 40, (0, -120, 50), mat('title', (1, 1, 1), emit=(1, 1, 1), strength=0))
+tagline = text('tagline', 'See more. Look normal.', 16, (0, -120, -70), mat('tagline', (1, 1, 1), emit=(1, 1, 1), strength=0))
+url = text('url', 'industries.gzowo.fun', 12, (0, -120, -92), mat('url', (1, 1, 1), emit=(1, 1, 1), strength=0))
+intro = text('intro', 'Gzowo Industries', 16, (0, -140, 50), mat('intro', (1, 1, 1), emit=(1, 1, 1), strength=0))
 for o in (title, tagline, url, intro):
     o.hide_render = True; o.keyframe_insert('hide_render', frame=1)
 
@@ -178,11 +179,11 @@ def fade_text(o, t0, t1, peak=4.0, fade=0.8):
     emission_keys(o.data.materials[0], [(sec(t0), 0), (sec(t0 + fade), peak), (sec(t1 - fade), peak), (sec(t1), 0)])
 
 for t, t0, t1 in cap_objs:
-    emission_keys(t.data.materials[0], [(sec(t0), 0), (sec(t0 + 0.8), 2.5), (sec(t1 - 0.8), 2.5), (sec(t1), 0)])
-fade_text(intro, 1.5, 5.5, peak=2.0)
-fade_text(title, 49.5, 58.5, peak=6.0, fade=1.2)
-fade_text(tagline, 51.5, 58.5, peak=3.0, fade=1.0)
-fade_text(url, 56.5, 60.0, peak=2.5, fade=0.8)
+    emission_keys(t.data.materials[0], [(sec(t0), 0), (sec(t0 + 0.8), 10), (sec(t1 - 0.8), 10), (sec(t1), 0)])
+fade_text(intro, 1.5, 5.5, peak=6.0)
+fade_text(title, 49.0, 58.5, peak=12.0, fade=1.2)
+fade_text(tagline, 55.0, 58.5, peak=9.0, fade=1.0)
+fade_text(url, 57.0, 60.0, peak=8.0, fade=0.8)
 emission_keys(M_HUD, [(sec(15.5), 0), (sec(16.5), 6), (sec(22), 6), (sec(22.5), 0), (sec(40), 0), (sec(41), 6), (sec(49), 6), (sec(50), 0)])
 
 # ---------------------------------------------------------------- lights ---
@@ -218,7 +219,7 @@ V = 1.25 if MODE == 'v' else 1.0   # the vertical cut stands a little further ba
 SHOTS = [   # (t0, t1, cam_from, cam_to, target_from, target_to)
     (0.0, 6.5, (150, 60, 40), (120, 70, 28), (72, -7, 12), (60, 0, 8)),            # hinge and end-piece, light sweep
     (6.5, 14.5, (260, 300, 120), (190, 330, 80), (0, 0, 0), (0, 0, 0)),             # whole glasses, slow drift
-    (14.5, 23.0, (140, 150, 50), (95, 115, 25), (40, 23, 0), (36, 23, 0)),            # HUD arm and splitter
+    (14.5, 23.0, (175, 187, 72), (119, 144, 50), (40, 23, -10), (36, 23, -8)),         # HUD arm and splitter, caption on the floor below
     (23.0, 31.5, (0, -380, 230), (0, -330, 190), (0, -10, 0), (0, -10, 0)),          # boxes snap on, seen from behind-above
     (31.5, 40.0, (60, -200, 300), (-40, -220, 280), (0, -30, 0), (0, -30, 0)),        # temples fold, from behind-above
     (40.0, 49.5, (300, 260, 120), (-220, 330, 100), (0, 0, 0), (0, 0, 0)),           # hero orbit

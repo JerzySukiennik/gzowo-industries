@@ -7,3 +7,10 @@ reference/*
 !reference/README.md
 work/
 Niepotrzebne/
+film/frames_*/
+film/test_*.png
+film/check*.png
+film/vcheck*.png
+film/*.mp4
+film/*.log
+cad/stl-asm/

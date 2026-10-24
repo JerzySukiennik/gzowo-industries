@@ -16,8 +16,8 @@ ffmpeg -y -v error \
     [4:a]adelay=23500|23500,volume=1.6[n3];
     [5:a]adelay=32000|32000,volume=1.6[n4];
     [6:a]adelay=40500|40500,volume=1.6[n5];
-    [7:a]adelay=50000|50000,volume=1.6[n6];
-    [8:a]adelay=55000|55000,volume=1.6[n7];
+    [7:a]adelay=49000|49000,volume=1.6[n6];
+    [8:a]adelay=55600|55600,volume=1.6[n7];
     [music][n1][n2][n3][n4][n5][n6][n7]amix=inputs=8:duration=first:normalize=0,alimiter=limit=0.95[a]
   " \
   -map 0:v -map "[a]" -c:v libx264 -preset slow -crf 18 -pix_fmt yuv420p -r $FPS -t 60 -c:a aac -b:a 192k -movflags +faststart \
